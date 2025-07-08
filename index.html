@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Film Flick - Find Your Next Movie</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="page-wrapper">
+        <header>
+            <div class="header-left-items">
+                <button id="home-btn" class="nav-btn">Film Flick</button>
+            </div>
+            <form id="search-form">
+                <input type="text" id="search-input" placeholder="Search for a movie or TV show...">
+                <button type="submit">Search</button>
+            </form>
+        </header>
+
+        <main id="app-container">
+            <!-- View 1: Landing Page -->
+            <div id="landing-view" class="view active">
+                <div class="landing-content">
+                    <h1 class="title"><span class="title-accent">Film</span>Flick</h1>
+                    <p class="subtitle">Find the perfect movie or show for any mood.</p>
+                    <button id="start-quiz-btn" class="btn btn-primary btn-large">Start Quiz</button>
+                </div>
+            </div>
+
+            <!-- View 2: Quiz -->
+            <div id="quiz-view" class="view">
+                <h2 id="quiz-question"></h2>
+                <div id="quiz-options-container" class="grid-container">
+                    <!-- This container will hold options -->
+                </div>
+                <div id="quiz-nav-buttons">
+                    <button id="quiz-next-btn" class="btn btn-primary">Next</button>
+                </div>
+            </div>
+
+            <!-- View 3: Loading Spinner -->
+            <div id="loading-view" class="view">
+                <div class="spinner"></div>
+                <p id="loading-text">Finding the perfect match...</p>
+            </div>
+
+            <!-- View 4: Result -->
+            <div id="result-view" class="view">
+                <div class="result-card">
+                    <div class="poster-container">
+                        <img id="media-poster" src="" alt="Poster">
+                    </div>
+                    <div class="info-container">
+                        <h3 id="media-title">Title</h3>
+                        <p id="media-details">Year - Rating</p>
+                        <p id="media-overview">This is where the plot synopsis will appear.</p>
+                        <div class="button-group">
+                            <a id="media-trailer-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Trailer</a>
+                            <button id="try-again-btn" class="btn btn-secondary">Start Over</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Cast Info Section -->
+                <div id="cast-section" class="details-section">
+                    <h3 class="section-title">Top Billed Cast</h3>
+                    <div id="media-cast-grid" class="cast-grid"></div>
+                </div>
+                <!-- Recommendations Section -->
+                <div id="recommendations-section" class="details-section">
+                    <h3 class="section-title">You Might Also Like</h3>
+                    <div id="recommendations-grid" class="movie-grid"></div>
+                </div>
+            </div>
+
+            <!-- View 5: Search Results -->
+            <div id="search-results-view" class="view">
+                <h2 class="result-title">Search Results</h2>
+                <div id="search-results-grid" class="movie-grid"></div>
+            </div>
+            
+            <!-- View 6: Error Message -->
+            <div id="error-view" class="view">
+                <h2 class="result-title">Oops!</h2>
+                <p id="error-message">Something went wrong.</p>
+                <button id="error-try-again-btn" class="btn btn-secondary">Go Home</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
