@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Film Flick - Find Your Next Movie</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -33,7 +36,6 @@
                 </div>
             </div>
 
-            <!-- View 2: Quiz -->
             <div id="quiz-view" class="view">
                 <h2 id="quiz-question"></h2>
                 <div id="quiz-options-container" class="grid-container"></div>
@@ -42,12 +44,10 @@
                 </div>
             </div>
 
-            <!-- View 3: Loading Spinner -->
             <div id="loading-view" class="view">
                 <div class="spinner"></div>
                 <p id="loading-text">Loading...</p>
             </div>
-
             
             <div id="result-view" class="view">
                 <div class="result-card">
@@ -75,29 +75,52 @@
                 </div>
             </div>
 
-            <!-- View 5: Search Results -->
             <div id="search-results-view" class="view">
                 <h2 class="result-title">Search Results</h2>
                 <div id="search-results-grid" class="movie-grid"></div>
                 <div id="pagination-controls"></div>
             </div>
             
-            <!-- View 6: Error Message -->
             <div id="error-view" class="view">
                 <h2 class="result-title">Oops!</h2>
                 <p id="error-message">Something went wrong.</p>
                 <button id="error-try-again-btn" class="btn btn-secondary">Go Home</button>
             </div>
             
-            <!-- View 7: Watchlist -->
             <div id="watchlist-view" class="view">
-                <h2 class="result-title">Watchlist</h2>
+                <h2 class="result-title">My List</h2>
+                
+                <div id="watchlist-filters" class="filter-controls">
+                    <button class="btn filter-btn active" data-filter="all">All</button>
+                    <button class="btn filter-btn" data-filter="towatch">To Watch</button>
+                    <button class="btn filter-btn" data-filter="watched">Watched</button>
+                </div>
+                
+                <div id="genre-filters" class="filter-controls genre-controls">
+                </div>
+
                 <div id="watchlist-grid" class="movie-grid"></div>
             </div>
 
         </main>
+
+        <div id="rating-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h3>Rate this title</h3>
+                <div class="stars" data-rating="0">
+                    <span data-value="1">☆</span>
+                    <span data-value="2">☆</span>
+                    <span data-value="3">☆</span>
+                    <span data-value="4">☆</span>
+                    <span data-value="5">☆</span>
+                </div>
+                <button id="save-rating-btn" class="btn btn-primary">Save Rating</button>
+                <button id="close-modal-btn" class="close-btn">×</button>
+            </div>
+        </div>
+
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
-</html> 
+</html>
