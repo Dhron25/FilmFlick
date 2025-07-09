@@ -20,12 +20,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const quizNextBtn = document.getElementById('quiz-next-btn');
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
+  const watchlistBtn = document.getElementById('watchlist-btn');
+  const addToWatchlistBtn = document.getElementById('add-to-watchlist-btn');
   
   // Grids & Containers
   const searchResultsGrid = document.getElementById('search-results-grid');
   const searchResultsTitle = document.querySelector('#search-results-view .result-title');
   const quizQuestionEl = document.getElementById('quiz-question');
   const quizOptionsContainer = document.getElementById('quiz-options-container');
+  const watchlistGrid = document.getElementById('watchlist-grid');
+  const paginationControls = document.getElementById('pagination-controls');
 
   // Result Page Elements
   const mediaPosterEl = document.getElementById('media-poster');
@@ -43,6 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- State Management ---
   let currentQuizStep = 0;
   let userChoices = {};
+  let watchlist = [];
+  let currentSearchQuery = '';
+  let currentSearchPage = 1;
+  let totalSearchPages = 1;
 
   // --- QUIZ DATA ---
   const quizData = [
@@ -67,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- CORE FUNCTIONS ---
   const showView = (viewId) => {
+      window.scrollTo(0, 0);
       header.style.display = (viewId === 'landing-view') ? 'none' : 'flex';
       views.forEach(view => view.classList.remove('active'));
       document.getElementById(viewId)?.classList.add('active');
@@ -87,12 +96,55 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   };
   
-  // --- RENDERING FUNCTIONS ---
-  const displayError = (message) => {
-      errorMessageEl.textContent = message || "An unknown error occurred.";
-      showView('error-view');
+  // --- WATCHLIST LOGIC ---
+  const loadWatchlist = () => {
+      const storedWatchlist = localStorage.getItem('filmFlickWatchlist');
+      watchlist = storedWatchlist ? JSON.parse(storedWatchlist) : [];
+  };
+
+  const saveWatchlist = () => {
+      localStorage.setItem('filmFlickWatchlist', JSON.stringify(watchlist));
+  };
+
+  const toggleWatchlist = (mediaId, mediaType) => {
+      const index = watchlist.findIndex(item => item.id === mediaId);
+      if (index > -1) watchlist.splice(index, 1);
+      else watchlist.push({ id: mediaId, type: mediaType });
+      saveWatchlist();
+      updateWatchlistButton(mediaId);
+  };
+
+  const updateWatchlistButton = (mediaId) => {
+      const isInWatchlist = watchlist.some(item => item.id === mediaId);
+      addToWatchlistBtn.textContent = isInWatchlist ? 'In Watchlist' : 'Add to Watchlist';
+      addToWatchlistBtn.classList.toggle('active', isInWatchlist);
   };
   
+  const displayWatchlist = async () => {
+      showView('loading-view');
+      watchlistGrid.innerHTML = '';
+      if (watchlist.length === 0) {
+          watchlistGrid.innerHTML = '<p>Your watchlist is empty. Add some movies or shows to see them here!</p>';
+          showView('watchlist-view');
+          return;
+      }
+      const promises = watchlist.map(item => fetchFromAPI(`${item.type}/${item.id}`));
+      const results = await Promise.all(promises);
+      
+      results.forEach((media, index) => {
+          if (media) {
+              // Find the original item in the watchlist to confirm its type
+              const watchlistItem = watchlist.find(item => item.id === media.id);
+              if (watchlistItem) {
+                  media.media_type = watchlistItem.type;
+                  watchlistGrid.appendChild(createMediaCard(media, index));
+              }
+          }
+      });
+      showView('watchlist-view');
+  };
+
+  // --- RENDERING FUNCTIONS ---
   const createMediaCard = (media, index = 0) => {
       const card = document.createElement('div');
       card.className = 'search-result-card grid-item';
@@ -100,11 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.innerHTML = `
           <img src="${media.poster_path ? IMAGE_BASE_URL + media.poster_path : PLACEHOLDER_POSTER}" alt="Poster">
           <p>${media.title || media.name}</p>`;
-      card.addEventListener('click', () => {
-          window.scrollTo(0, 0);
-          showView('loading-view');
-          displayRecommendedMedia(media);
-      });
+      card.addEventListener('click', () => displayRecommendedMedia(media));
       return card;
   };
 
@@ -135,23 +183,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   };
   
-  const displaySearchResults = (results, title = "Search Results") => {
-      searchResultsTitle.textContent = title;
-      searchResultsGrid.innerHTML = '';
-      const validResults = results.filter(r => (r.media_type === 'movie' || r.media_type === 'tv') && r.poster_path);
-      if (validResults.length === 0) searchResultsGrid.innerHTML = '<p>No results found.</p>';
-      else validResults.forEach((result, index) => searchResultsGrid.appendChild(createMediaCard(result, index)));
-      showView('search-results-view');
-  };
-
   const displayRecommendedMedia = async (media) => {
-      if (!media) { displayError("Could not find a recommendation."); return; }
+      showView('loading-view');
+      if (!media) { displayError("Could not find details."); return; }
       
-      const mediaType = media.title ? 'movie' : 'tv';
+      // Determine mediaType from the object's properties or existing media_type
+      const mediaType = media.media_type || (media.title ? 'movie' : 'tv');
       const fullDetails = await fetchFromAPI(`${mediaType}/${media.id}`, { append_to_response: 'videos,credits,recommendations' });
       if (!fullDetails) return;
 
-      mediaPosterEl.src = fullDetails.poster_path ? `${IMAGE_BASE_URL}${fullDetails.poster_path}` : PLACEHOLDER_POSTER;
+      mediaPosterEl.src = fullDetails.poster_path ? IMAGE_BASE_URL + fullDetails.poster_path : PLACEHOLDER_POSTER;
       mediaTitleEl.textContent = fullDetails.title || fullDetails.name;
       
       if (mediaType === 'tv') {
@@ -168,6 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
       mediaTrailerLink.style.display = trailer ? 'inline-block' : 'none';
       if (trailer) mediaTrailerLink.href = `https://www.youtube.com/watch?v=${trailer.key}`;
       
+      updateWatchlistButton(fullDetails.id);
+      addToWatchlistBtn.onclick = () => toggleWatchlist(fullDetails.id, mediaType);
+
       renderCast(fullDetails.credits.cast);
       renderRecommendations(fullDetails.recommendations.results);
       showView('result-view');
@@ -182,6 +226,50 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   };
 
+  // --- PAGINATION & SEARCH LOGIC ---
+  const executeSearch = async (query, page) => {
+      showView('loading-view');
+      const data = await fetchFromAPI('search/multi', { query, page });
+      if (data) {
+          currentSearchQuery = query;
+          currentSearchPage = data.page;
+          totalSearchPages = data.total_pages;
+          displaySearchResults(data.results);
+      }
+  };
+  
+  const displaySearchResults = (results, title = "Search Results") => {
+      searchResultsTitle.textContent = title;
+      searchResultsGrid.innerHTML = '';
+      const validResults = results.filter(r => (r.media_type === 'movie' || r.media_type === 'tv') && r.poster_path);
+      if (validResults.length === 0) {
+          searchResultsGrid.innerHTML = '<p>No results found for this query.</p>';
+      } else {
+          validResults.forEach((result, index) => searchResultsGrid.appendChild(createMediaCard(result, index)));
+      }
+      renderPaginationControls();
+      showView('search-results-view');
+  };
+
+  const renderPaginationControls = () => {
+      paginationControls.innerHTML = '';
+      if (totalSearchPages <= 1) return;
+      const prevBtn = document.createElement('button');
+      prevBtn.textContent = 'Previous';
+      prevBtn.className = 'btn btn-secondary';
+      prevBtn.disabled = currentSearchPage === 1;
+      prevBtn.addEventListener('click', () => executeSearch(currentSearchQuery, currentSearchPage - 1));
+      const nextBtn = document.createElement('button');
+      nextBtn.textContent = 'Next';
+      nextBtn.className = 'btn btn-secondary';
+      nextBtn.disabled = currentSearchPage === totalSearchPages;
+      nextBtn.addEventListener('click', () => executeSearch(currentSearchQuery, currentSearchPage + 1));
+      const pageInfo = document.createElement('span');
+      pageInfo.id = 'page-info';
+      pageInfo.textContent = `Page ${currentSearchPage} of ${totalSearchPages}`;
+      paginationControls.append(prevBtn, pageInfo, nextBtn);
+  };
+  
   // --- QUIZ LOGIC ---
   const startQuiz = () => {
       currentQuizStep = 0;
@@ -194,7 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const stepData = quizData[currentQuizStep];
       quizQuestionEl.textContent = stepData.question;
       quizOptionsContainer.innerHTML = '';
-      
       const createButton = (option, callback) => {
           const button = document.createElement('button');
           button.className = 'btn';
@@ -202,7 +289,6 @@ document.addEventListener('DOMContentLoaded', () => {
           button.addEventListener('click', () => callback(option));
           return button;
       };
-
       if (stepData.type === 'single-select') {
           stepData.options.forEach(option => quizOptionsContainer.appendChild(createButton(option, (opt) => {
               userChoices[stepData.key] = opt.value;
@@ -220,7 +306,6 @@ document.addEventListener('DOMContentLoaded', () => {
               quizOptionsContainer.appendChild(button);
           });
       } else if (stepData.type === 'single-select-lang') {
-          // Expanded language list
           const commonLangs = [
               { text: "Any", value: null }, { text: "English", value: "en" }, { text: "Spanish", value: "es" },
               { text: "Hindi", value: "hi" }, { text: "French", value: "fr" }, { text: "German", value: "de" },
@@ -232,7 +317,6 @@ document.addEventListener('DOMContentLoaded', () => {
               quizNextBtn.click();
           })));
       }
-      
       quizNextBtn.style.display = (stepData.type === 'multi-select') ? 'inline-block' : 'none';
       quizNextBtn.textContent = (currentQuizStep === quizData.length - 1) ? 'Find Match' : 'Next';
   };
@@ -254,7 +338,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const dateKey = mediaType === 'movie' ? 'primary_release_date' : 'first_air_date';
       if (releaseDates?.gte) params[`${dateKey}.gte`] = releaseDates.gte;
       if (releaseDates?.lte) params[`${dateKey}.lte`] = releaseDates.lte;
-
       const data = await fetchFromAPI(`discover/${mediaType}`, params);
       if (data?.results.length > 0) {
           displayRecommendedMedia(data.results[Math.floor(Math.random() * data.results.length)]);
@@ -266,18 +349,18 @@ document.addEventListener('DOMContentLoaded', () => {
   startQuizBtn.addEventListener('click', startQuiz);
   tryAgainBtn.addEventListener('click', () => showView('landing-view'));
   errorTryAgainBtn.addEventListener('click', () => showView('landing-view'));
+  watchlistBtn.addEventListener('click', displayWatchlist);
 
-  searchForm.addEventListener('submit', async (e) => {
+  searchForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const query = searchInput.value.trim();
       if (query) {
-          showView('loading-view');
-          const data = await fetchFromAPI('search/multi', { query });
-          if (data) displaySearchResults(data.results);
+          executeSearch(query, 1);
           searchInput.value = '';
       }
   });
 
   // --- INITIALIZATION ---
+  loadWatchlist();
   showView('landing-view');
 });

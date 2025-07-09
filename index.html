@@ -15,6 +15,7 @@
         <header>
             <div class="header-left-items">
                 <button id="home-btn" class="nav-btn">Film Flick</button>
+                <button id="watchlist-btn" class="nav-btn">My Watchlist</button>
             </div>
             <form id="search-form">
                 <input type="text" id="search-input" placeholder="Search for a movie or TV show...">
@@ -35,9 +36,7 @@
             <!-- View 2: Quiz -->
             <div id="quiz-view" class="view">
                 <h2 id="quiz-question"></h2>
-                <div id="quiz-options-container" class="grid-container">
-                    <!-- This container will hold options -->
-                </div>
+                <div id="quiz-options-container" class="grid-container"></div>
                 <div id="quiz-nav-buttons">
                     <button id="quiz-next-btn" class="btn btn-primary">Next</button>
                 </div>
@@ -46,7 +45,7 @@
             <!-- View 3: Loading Spinner -->
             <div id="loading-view" class="view">
                 <div class="spinner"></div>
-                <p id="loading-text">Finding the perfect match...</p>
+                <p id="loading-text">Loading...</p>
             </div>
 
             <!-- View 4: Result -->
@@ -61,16 +60,15 @@
                         <p id="media-overview">This is where the plot synopsis will appear.</p>
                         <div class="button-group">
                             <a id="media-trailer-link" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Trailer</a>
+                            <button id="add-to-watchlist-btn" class="btn btn-secondary"></button>
                             <button id="try-again-btn" class="btn btn-secondary">Start Over</button>
                         </div>
                     </div>
                 </div>
-                <!-- Cast Info Section -->
                 <div id="cast-section" class="details-section">
                     <h3 class="section-title">Top Billed Cast</h3>
                     <div id="media-cast-grid" class="cast-grid"></div>
                 </div>
-                <!-- Recommendations Section -->
                 <div id="recommendations-section" class="details-section">
                     <h3 class="section-title">You Might Also Like</h3>
                     <div id="recommendations-grid" class="movie-grid"></div>
@@ -81,6 +79,7 @@
             <div id="search-results-view" class="view">
                 <h2 class="result-title">Search Results</h2>
                 <div id="search-results-grid" class="movie-grid"></div>
+                <div id="pagination-controls"></div>
             </div>
             
             <!-- View 6: Error Message -->
@@ -89,6 +88,13 @@
                 <p id="error-message">Something went wrong.</p>
                 <button id="error-try-again-btn" class="btn btn-secondary">Go Home</button>
             </div>
+            
+            <!-- View 7: Watchlist -->
+            <div id="watchlist-view" class="view">
+                <h2 class="result-title">My Watchlist</h2>
+                <div id="watchlist-grid" class="movie-grid"></div>
+            </div>
+
         </main>
     </div>
 
