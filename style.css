@@ -1,4 +1,4 @@
-/* --- POLISHED UI: "NEON REEF" THEME (FINAL FIX) --- */
+
 
 :root {
   --bg-color: #0d1117;
@@ -9,18 +9,16 @@
   --border-color: #30363d;
   
   
-  --accent-color: #a78bfa;
+  --accent-color: #a78bfa;  
   --accent-color-hover: #c4b5fd;
   --accent-color-rgb: 167, 139, 250;
-  --accent-text-color: #0d1117; /* Dark text for contrast on purple */
-  
-  /* Secondary Accent */
-  --secondary-accent-color: #22d3ee; /* Cyan */
+  --accent-text-color: #0d1117; 
+  --secondary-accent-color: #22d3ee; 
   
   --shadow-color: rgba(0, 0, 0, 0.4);
-}
+}   
 
-/* --- BASE & LAYOUT --- */
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'Poppins', sans-serif;
@@ -151,7 +149,7 @@ header {
     color: var(--bg-color); border-color: var(--secondary-accent-color);
 }
 
-/* --- BUTTONS --- */
+   
 .btn {
   font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 600;
   padding: 12px 24px; border-radius: 50px; border: 2px solid transparent;

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- API Configuration ---
-    // MODIFICATION 1: Replaced the old, invalid API key with your new, working key.
+    
+   
     const API_KEY = '58be003438126be75d16cfad1331d6c6';
     const API_BASE_URL = 'https://api.themoviedb.org/3';
     const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -11,22 +11,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Element Selectors ---
     const body = document.body;
     const views = document.querySelectorAll('.view');
-    const header = document.querySelector('header');
+    const header = document.querySelector('header');      
     
-    // Buttons & Inputs
+    
     const homeBtn = document.getElementById('home-btn');
     const startQuizBtn = document.getElementById('start-quiz-btn');
-    // NOTE: 'try-again-btn' does not exist in your HTML, this may be a leftover. I've left the code in.
+    
     const tryAgainBtn = document.getElementById('try-again-btn'); 
     const errorTryAgainBtn = document.getElementById('error-try-again-btn');
     const quizNextBtn = document.getElementById('quiz-next-btn');
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('search-input');
-    const watchlistBtn = document.getElementById('watchlist-btn');
+    const watchlistBtn = document.getElementById('watchlist-btn'); 
     const addToWatchlistBtn = document.getElementById('add-to-watchlist-btn');
     const markAsWatchedBtn = document.getElementById('mark-as-watched-btn');
     
-    // Grids & Containers
+    
     const searchResultsGrid = document.getElementById('search-results-grid');
     const searchResultsTitle = document.querySelector('#search-results-view .result-title');
     const quizQuestionEl = document.getElementById('quiz-question');
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const watchlistGrid = document.getElementById('watchlist-grid');
     const paginationControls = document.getElementById('pagination-controls');
 
-    // Result Page Elements
+    
     const mediaPosterEl = document.getElementById('media-poster');
     const mediaTitleEl = document.getElementById('media-title');
     const mediaDetailsEl = document.getElementById('media-details');
@@ -44,10 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const recommendationsSection = document.getElementById('recommendations-section');
     const recommendationsGrid = document.getElementById('recommendations-grid');
     
-    // Error
+    
     const errorMessageEl = document.getElementById('error-message');
 
-    // --- State Management ---
+    
     let currentQuizStep = 0;
     let userChoices = {};
     let watchlist = [];
@@ -170,8 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
         showView('watchlist-view');
     };
 
-    // --- RENDERING FUNCTIONS ---
-    const createMediaCard = (media, index = 0) => {
+    
+    const createMediaCard = (media, index = 0) => {  
         const card = document.createElement('div');
         card.className = 'search-result-card grid-item';
         card.style.animationDelay = `${index * 50}ms`;
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else { displayError("Couldn't find anything with those preferences."); }
     };
 
-    // --- GLOBAL EVENT LISTENERS ---
+    // --- GLOBAL EVENT LISTENERS -
     homeBtn.addEventListener('click', () => showView('landing-view'));
     startQuizBtn.addEventListener('click', startQuiz);
     // This button does not exist in your HTML, so the listener might not attach to anything.
