@@ -1,11 +1,11 @@
-// js/main.js
+
 
 import { fetchData } from './api.js';
 import { elements, switchView, renderGrid, updateResultButtons, IMAGE_BASE_URL, YOUTUBE_BASE_URL, showErrorView, renderPagination, displayRatingModal, updateStars, generateGenreFilters } from './ui.js';
 import { startQuiz, nextQuestion, selectOption } from './quiz.js';
 import { getFromStorage, addToStorage, removeFromStorage, isInStorage } from './storage.js';
 
-// --- STATE MANAGEMENT ---
+
 const state = {
     currentView: 'landing-view',
     currentMedia: null,
@@ -13,12 +13,12 @@ const state = {
     mediaToRate: null,
 };
 
-// NEW HELPER FUNCTION: To truncate long text nicely
+// NEW HELPER FUNCTION: To truncate long text nicely    
 function truncateText(text, maxLength) {
     if (text.length <= maxLength) {
         return text;
     }
-    // Trim to the maximum length and find the last space to avoid cutting words in half
+    // Trim to the maximum length and find the last space to avoid cutting words in half 
     let truncated = text.substr(0, maxLength);
     truncated = truncated.substr(0, Math.min(truncated.length, truncated.lastIndexOf(" ")));
     return truncated + "…"; // Use ellipsis character
@@ -72,7 +72,7 @@ async function displayResult(mediaId, mediaType) {
     }
 }
 
-// UPDATED to use the truncateText function
+// UPDATED to use the truncateText function          
 async function displayPersonDetails(personId) {
     switchView('loading-view');
     try {
@@ -104,7 +104,7 @@ async function displayPersonDetails(personId) {
 }
 
 
-// --- The rest of main.js remains the same ---
+// --- The rest of main.js remains the same --     j
 async function handleSearch(page = 1) {
     const query = elements.searchInput.value.trim();
     if (!query) return;
