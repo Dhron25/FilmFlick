@@ -20,6 +20,7 @@ export const elements = {
     searchResultsView: document.getElementById('search-results-view'),
     errorView: document.getElementById('error-view'),
     watchlistView: document.getElementById('watchlist-view'),
+    actorView: document.getElementById('actor-view'),
     quizQuestion: document.getElementById('quiz-question'),
     quizOptionsContainer: document.getElementById('quiz-options-container'),
     quizNextBtn: document.getElementById('quiz-next-btn'),
@@ -42,6 +43,10 @@ export const elements = {
     modalStars: document.querySelector('.stars'),
     saveRatingBtn: document.getElementById('save-rating-btn'),
     closeModalBtn: document.getElementById('close-modal-btn'),
+    actorPhoto: document.getElementById('actor-photo'),
+    actorName: document.getElementById('actor-name'),
+    actorBio: document.getElementById('actor-bio'),
+    actorFilmographyGrid: document.getElementById('actor-filmography-grid'),
 };
 
 export function switchView(viewId) {

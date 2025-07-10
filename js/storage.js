@@ -6,6 +6,10 @@ export function addToStorage(key, item) {
     if (!isInStorage(key, item.id)) {
         const items = getFromStorage(key);
         saveToStorage(key, [...items, item]);
+    } else { // Handle updates, e.g., for ratings
+        const items = getFromStorage(key);
+        const updatedItems = items.map(i => i.id === item.id ? item : i);
+        saveToStorage(key, updatedItems);
     }
 }
 

@@ -53,7 +53,7 @@
   .section-title { font-size: 1.75rem; font-weight: 600; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem; }
   .result-title { text-align: center; font-size: 2.5rem; margin-bottom: 2rem; }
   
-  .movie-grid, #search-results-grid, #watchlist-grid, #recommendations-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .movie-grid, #search-results-grid, #watchlist-grid, #recommendations-grid, #actor-filmography-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
   .cast-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
   
   .filter-controls {
@@ -77,4 +77,32 @@
     .result-card { flex-direction: column; text-align: center; padding: 1.5rem; }
     .title { font-size: 3.5rem; }
     #media-title { font-size: 2rem; }
+  }
+  
+  /* --- ACTOR PROFILE LAYOUT --- */
+  .actor-profile {
+      align-items: flex-start; /* Aligns items to the top */
+      text-align: left;
+  }
+  
+  @media (max-width: 768px) {
+      .actor-profile {
+          flex-direction: row; 
+      }
+  }
+  
+  .actor-profile .poster-container {
+      flex-shrink: 0; /* Prevents the image from shrinking */
+  }
+  
+  .actor-profile #actor-photo {
+      width: 180px;
+      height: auto;
+      border-radius: 12px;
+  }
+  
+  #actor-bio {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
   }

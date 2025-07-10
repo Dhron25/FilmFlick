@@ -1,8 +1,11 @@
+// js/main.js
+
 import { fetchData } from './api.js';
 import { elements, switchView, renderGrid, updateResultButtons, IMAGE_BASE_URL, YOUTUBE_BASE_URL, showErrorView, renderPagination, displayRatingModal, updateStars, generateGenreFilters } from './ui.js';
 import { startQuiz, nextQuestion, selectOption } from './quiz.js';
 import { getFromStorage, addToStorage, removeFromStorage, isInStorage } from './storage.js';
 
+// --- STATE MANAGEMENT ---
 const state = {
     currentView: 'landing-view',
     currentMedia: null,
@@ -10,7 +13,20 @@ const state = {
     mediaToRate: null,
 };
 
-export async function displayResult(mediaId, mediaType) {
+// NEW HELPER FUNCTION: To truncate long text nicely
+function truncateText(text, maxLength) {
+    if (text.length <= maxLength) {
+        return text;
+    }
+    // Trim to the maximum length and find the last space to avoid cutting words in half
+    let truncated = text.substr(0, maxLength);
+    truncated = truncated.substr(0, Math.min(truncated.length, truncated.lastIndexOf(" ")));
+    return truncated + "…"; // Use ellipsis character
+}
+
+
+// --- CORE APPLICATION LOGIC ---
+async function displayResult(mediaId, mediaType) {
     switchView('loading-view');
     try {
         const [details, credits, recommendations, videos] = await Promise.all([
@@ -43,6 +59,7 @@ export async function displayResult(mediaId, mediaType) {
             credits.cast.slice(0, 10).forEach(member => {
                 const castCard = document.createElement('div');
                 castCard.className = 'cast-card';
+                castCard.dataset.personId = member.id;
                 castCard.innerHTML = `<img src="${member.profile_path ? IMAGE_BASE_URL + member.profile_path : 'https://via.placeholder.com/150'}" alt="${member.name}"><div class="cast-info"><p class="cast-name">${member.name}</p><p class="cast-character">${member.character}</p></div>`;
                 elements.castGrid.appendChild(castCard);
             });
@@ -55,6 +72,39 @@ export async function displayResult(mediaId, mediaType) {
     }
 }
 
+// UPDATED to use the truncateText function
+async function displayPersonDetails(personId) {
+    switchView('loading-view');
+    try {
+        const [details, creditsData] = await Promise.all([
+            fetchData(`person/${personId}`),
+            fetchData(`person/${personId}/combined_credits`)
+        ]);
+
+        elements.actorName.textContent = details.name;
+        elements.actorPhoto.src = details.profile_path ? `${IMAGE_BASE_URL}${details.profile_path}` : 'https://via.placeholder.com/500x750.png?text=No+Poster';
+        
+        // Use the truncate function for the biography
+        elements.actorBio.textContent = details.biography 
+            ? truncateText(details.biography, 400) 
+            : "No biography available.";
+
+        const sortedCredits = creditsData.cast.sort((a, b) => {
+            const dateA = a.release_date || a.first_air_date || '0000-00-00';
+            const dateB = b.release_date || b.first_air_date || '0000-00-00';
+            return new Date(dateB) - new Date(dateA);
+        });
+        
+        renderGrid(elements.actorFilmographyGrid, sortedCredits);
+        switchView('actor-view');
+
+    } catch (error) {
+        showErrorView("Could not load actor details. Please try again.");
+    }
+}
+
+
+// --- The rest of main.js remains the same ---
 async function handleSearch(page = 1) {
     const query = elements.searchInput.value.trim();
     if (!query) return;
@@ -158,7 +208,8 @@ function setupEventListeners() {
     elements.quizNextBtn.addEventListener('click', nextQuestion);
     elements.quizOptionsContainer.addEventListener('click', (e) => { if (e.target.matches('.btn')) selectOption(parseInt(e.target.dataset.index)); });
 
-    [elements.searchResultsGrid, elements.recommendationsGrid, elements.watchlistGrid].forEach(grid => {
+    // Centralized grid click handling
+    [elements.searchResultsGrid, elements.recommendationsGrid, elements.watchlistGrid, elements.actorFilmographyGrid].forEach(grid => {
         grid.addEventListener('click', (e) => {
             if (e.target.closest('.card-watchlist-btn')) handleCardButtonClick(e);
             else if (e.target.closest('[data-id]')) {
@@ -166,6 +217,14 @@ function setupEventListeners() {
                 if (id && type) displayResult(parseInt(id), type);
             }
         });
+    });
+    
+    // Add separate listener for cast grid
+    elements.castGrid.addEventListener('click', (e) => {
+        const castCard = e.target.closest('.cast-card');
+        if (castCard && castCard.dataset.personId) {
+            displayPersonDetails(castCard.dataset.personId);
+        }
     });
 
     elements.markAsWatchedBtn.addEventListener('click', () => {

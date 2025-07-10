@@ -28,6 +28,7 @@
 
         <main id="app-container">
             
+            <!-- View 1: Landing Page -->
             <div id="landing-view" class="view active">
                 <div class="landing-content">
                     <h1 class="title"><span class="title-accent">Film</span>Flick</h1>
@@ -36,6 +37,7 @@
                 </div>
             </div>
 
+            <!-- View 2: Quiz -->
             <div id="quiz-view" class="view">
                 <h2 id="quiz-question"></h2>
                 <div id="quiz-options-container" class="grid-container"></div>
@@ -44,11 +46,13 @@
                 </div>
             </div>
 
+            <!-- View 3: Loading Spinner -->
             <div id="loading-view" class="view">
                 <div class="spinner"></div>
                 <p id="loading-text">Loading...</p>
             </div>
             
+            <!-- View 4: Result Details Page -->
             <div id="result-view" class="view">
                 <div class="result-card">
                     <div class="poster-container">
@@ -75,18 +79,21 @@
                 </div>
             </div>
 
+            <!-- View 5: Search Results -->
             <div id="search-results-view" class="view">
                 <h2 class="result-title">Search Results</h2>
                 <div id="search-results-grid" class="movie-grid"></div>
                 <div id="pagination-controls"></div>
             </div>
             
+            <!-- View 6: Error Message -->
             <div id="error-view" class="view">
                 <h2 class="result-title">Oops!</h2>
                 <p id="error-message">Something went wrong.</p>
                 <button id="error-try-again-btn" class="btn btn-secondary">Go Home</button>
             </div>
             
+            <!-- View 7: Watchlist -->
             <div id="watchlist-view" class="view">
                 <h2 class="result-title">My List</h2>
                 
@@ -102,8 +109,26 @@
                 <div id="watchlist-grid" class="movie-grid"></div>
             </div>
 
+            <!-- View 8: Actor Details -->
+            <div id="actor-view" class="view">
+                <div class="result-card actor-profile">
+                    <div class="poster-container">
+                        <img id="actor-photo" src="" alt="Actor Photo">
+                    </div>
+                    <div class="info-container">
+                        <h3 id="actor-name" class="section-title">Name</h3>
+                        <p id="actor-bio">Biography will appear here.</p>
+                    </div>
+                </div>
+                <div class="details-section">
+                    <h3 class="section-title">Known For</h3>
+                    <div id="actor-filmography-grid" class="movie-grid"></div>
+                </div>
+            </div>
+
         </main>
 
+        <!-- Rating Modal -->
         <div id="rating-modal" class="modal-overlay">
             <div class="modal-content">
                 <h3>Rate this title</h3>

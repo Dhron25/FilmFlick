@@ -1,5 +1,6 @@
 import { fetchData } from './api.js';
 import { switchView, elements, showErrorView } from './ui.js';
+import { getFromStorage } from './storage.js';
 
 const quizData = [
     { question: "Are you looking for a Movie or a TV Show?", type: 'media_type', options: [{ text: "Movie", value: 'movie' }, { text: "TV Show", value: 'tv' }] },
@@ -77,7 +78,6 @@ async function finishQuiz() {
         if (genreSet.size > 0) primaryParams.with_genres = [...genreSet].join(',');
         if (keywordSet.size > 0) primaryParams.with_keywords = [...keywordSet].join(',');
         
-        // THIS IS THE LINE WITH THE CRITICAL FIX (primaryParams, not primary_params)
         let data = await fetchData(`discover/${quizState.mediaType}`, primaryParams);
 
         if (!data || data.results.length === 0) {
@@ -86,7 +86,14 @@ async function finishQuiz() {
         }
         
         if (data && data.results.length > 0) {
-            const recommendation = data.results[Math.floor(Math.random() * Math.min(data.results.length, 10))];
+            const watchlistIds = getFromStorage('watchlist').map(item => item.id);
+            const watchedListIds = getFromStorage('watchedList').map(item => item.id);
+            const existingIds = new Set([...watchlistIds, ...watchedListIds]);
+            const filteredResults = data.results.filter(movie => !existingIds.has(movie.id));
+            const recommendationsToShow = filteredResults.length > 0 ? filteredResults : data.results;
+            
+            const topResults = recommendationsToShow.slice(0, 10);
+            const recommendation = topResults[Math.floor(Math.random() * topResults.length)];
             quizState.onComplete(recommendation.id, quizState.mediaType);
         } else {
             showErrorView("We couldn't find a good match. Please try the quiz again!");
