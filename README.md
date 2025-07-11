@@ -11,8 +11,7 @@
 
  # 🎬 Film Flick
 
-**Film Flick** is a sleek and fun movie recommendation website that helps you find what to watch when you're bored. Whether you're in the mood for a thriller, comedy, or romance, Film Flick uses the TMDb API to suggest movies based on your preferences — or lets you hit “Random” to discover something new.
-
+**Film Flick** is a sleek and fun movie recommendation website that helps you find what to watch when you're bored. Whether you're in the mood for a thriller, comedy, or romance, Film Flick uses the TMDb API to suggest movies based on your preferences.
 ---
 
 ## 🌟 Features
@@ -34,14 +33,3 @@
 - TMDb API
 - LocalStorage (for Watchlist)
 - GitHub Pages (for deployment)
-
----
-
-## 🚀 Getting Started
-
-To run Film Flick locally:
-
-```bash
-git clone https://github.com/yourusername/film-flick.git
-cd film-flick
-# Open index.html in your browser
