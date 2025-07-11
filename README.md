@@ -16,7 +16,7 @@
 
 ## 🌟 Features
 
-- 🎲 **Movie Recommendatioans ** — Not sure what to watch? Take the quiz and let it decide for you!
+- 🎲 **Movie Recommendatioans** — Not sure what to watch? Take the quiz and let it decide for you!
 - 🎥 **Movie Previews** — Watch trailers before you commit.
 - 🔍 **Filters** — Search by genre, rating, language, release year, and runtime.
 - 🌙 **Dark Mode Toggle** — Enjoy browsing any time of day.
