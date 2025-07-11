@@ -5,3 +5,43 @@
          style="width: 35%;">
   </a>
 </div>
+
+
+
+
+ # 🎬 Film Flick
+
+**Film Flick** is a sleek and fun movie recommendation website that helps you find what to watch when you're bored. Whether you're in the mood for a thriller, comedy, or romance, Film Flick uses the TMDb API to suggest movies based on your preferences — or lets you hit “Random” to discover something new.
+
+---
+
+## 🌟 Features
+
+- 🎲 **Movie Recommendatioans ** — Not sure what to watch? Take the quiz and let it decide for you!
+- 🎥 **Movie Previews** — Watch trailers before you commit.
+- 🔍 **Filters** — Search by genre, rating, language, release year, and runtime.
+- 🌙 **Dark Mode Toggle** — Enjoy browsing any time of day.
+- ❤️ **Watchlist Support** — Save movies to your list (via localStorage).
+- 📱 **Fully Responsive Design** — Works great on mobile, tablet, and desktop.
+- 💅 **Modern UI** — Clean, hover-animated interface built for great UX.
+
+---
+
+## 🛠️ Tech Stack
+
+- HTML, CSS, JavaScript
+- Tailwind CSS
+- TMDb API
+- LocalStorage (for Watchlist)
+- GitHub Pages (for deployment)
+
+---
+
+## 🚀 Getting Started
+
+To run Film Flick locally:
+
+```bash
+git clone https://github.com/yourusername/film-flick.git
+cd film-flick
+# Open index.html in your browser
