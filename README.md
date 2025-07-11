@@ -19,7 +19,6 @@
 - 🎲 **Movie Recommendatioans** — Not sure what to watch? Take the quiz and let it decide for you!
 - 🎥 **Movie Previews** — Watch trailers before you commit.
 - 🔍 **Filters** — Search by genre, rating, language, release year, and runtime.
-- 🌙 **Dark Mode Toggle** — Enjoy browsing any time of day.
 - ❤️ **Watchlist Support** — Save movies to your list (via localStorage).
 - 📱 **Fully Responsive Design** — Works great on mobile, tablet, and desktop.
 - 💅 **Modern UI** — Clean, hover-animated interface built for great UX.
