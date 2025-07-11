@@ -79,9 +79,9 @@
     #media-title { font-size: 2rem; }
   }
   
-  /* --- ACTOR PROFILE LAYOUT --- */
+  
   .actor-profile {
-      align-items: flex-start; /* Aligns items to the top */
+      align-items: flex-start; 
       text-align: left;
   }
   
@@ -92,7 +92,7 @@
   }
   
   .actor-profile .poster-container {
-      flex-shrink: 0; /* Prevents the image from shrinking */
+      flex-shrink: 0; 
   }
   
   .actor-profile #actor-photo {

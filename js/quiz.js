@@ -1,10 +1,7 @@
-// js/quiz.js
-
 import { fetchData, fetchGenreList } from './api.js';
 import { switchView, elements, showErrorView } from './ui.js';
 import { getFromStorage } from './storage.js';
 
-// UPDATED: Expanded language list and adjusted question order for better flow.
 const quizData = [
     { question: "Are you looking for a Movie or a TV Show?", type: 'media_type', options: [{ text: "Movie", value: 'movie' }, { text: "TV Show", value: 'tv' }] },
     { question: "How are you feeling tonight?", options: [
@@ -46,9 +43,9 @@ const quizData = [
 let quizState = {};
 
 export function startQuiz(mainState, onCompleteCallback) {
-    quizState = mainState.quiz = { 
-        currentQuestionIndex: 0, 
-        answers: [], 
+    quizState = mainState.quiz = {
+        currentQuestionIndex: 0,
+        answers: [],
         mediaType: 'movie',
         onComplete: onCompleteCallback,
         genreLists: {}
@@ -68,7 +65,6 @@ export async function displayQuestion() {
     elements.quizNextBtn.style.display = 'none';
 
     if (questionData.type === 'dynamic_genre') {
-        // Initialize the answer as a Set to handle multiple selections
         quizState.answers[quizState.currentQuestionIndex] = new Set();
         elements.quizOptionsContainer.innerHTML = '<p>Loading genres...</p>';
         try {
@@ -78,12 +74,11 @@ export async function displayQuestion() {
             }
             const genres = quizState.genreLists[quizState.mediaType];
             elements.quizOptionsContainer.innerHTML = '';
-            
-            // "Any Genre" acts as a reset button
+
             const anyBtn = document.createElement('button');
             anyBtn.className = 'btn';
             anyBtn.textContent = 'Any Genre';
-            anyBtn.dataset.index = -1; // Special index
+            anyBtn.dataset.index = -1;
             elements.quizOptionsContainer.appendChild(anyBtn);
 
             genres.forEach((genre, index) => {
@@ -94,7 +89,6 @@ export async function displayQuestion() {
                 button.dataset.genreId = genre.id;
                 elements.quizOptionsContainer.appendChild(button);
             });
-            // Show next button immediately
             elements.quizNextBtn.style.display = 'inline-block';
 
         } catch (error) {
@@ -119,8 +113,8 @@ export function selectOption(selectedIndex) {
         const genreId = selectedButton.dataset.genreId;
         const answerSet = quizState.answers[quizState.currentQuestionIndex];
 
-        if (selectedIndex < 0) { // "Any Genre" button clicked
-            answerSet.clear(); // Clear all selections
+        if (selectedIndex < 0) {
+            answerSet.clear();
             elements.quizOptionsContainer.querySelectorAll('.btn.selected').forEach(btn => btn.classList.remove('selected'));
         } else {
             if (answerSet.has(genreId)) {
@@ -131,13 +125,12 @@ export function selectOption(selectedIndex) {
                 selectedButton.classList.add('selected');
             }
         }
-    } else { // Handle single-select questions
+    } else {
         if (questionData.type === 'media_type') {
             quizState.mediaType = questionData.options[selectedIndex].value;
         }
         quizState.answers[quizState.currentQuestionIndex] = selectedIndex;
-        
-        // Update UI for single-select
+
         elements.quizOptionsContainer.querySelectorAll('.btn').forEach(btn => {
             btn.classList.remove('selected');
         });
@@ -156,7 +149,7 @@ async function finishQuiz() {
     try {
         const primaryParams = { 'sort_by': 'popularity.desc', 'include_adult': 'false', 'vote_count.gte': 100 };
         const genreSet = new Set();
-        
+
         if (!quizState.genreLists[quizState.mediaType]) {
             const genreData = await fetchGenreList(quizState.mediaType);
             quizState.genreLists[quizState.mediaType] = genreData.genres;
@@ -165,16 +158,14 @@ async function finishQuiz() {
 
         quizState.answers.forEach((answer, questionIndex) => {
             const question = quizData[questionIndex];
-            
-            // Handle multi-selected genres
+
             if (question.type === 'dynamic_genre' && answer instanceof Set) {
                 answer.forEach(genreId => genreSet.add(genreId));
                 return;
             }
 
-            // This should not happen if answer is a Set, but as a safeguard
             if (typeof answer !== 'number') return;
-            
+
             const scores = question.options[answer]?.scores;
             if (!scores) return;
 
@@ -197,10 +188,9 @@ async function finishQuiz() {
         });
 
         if (genreSet.size > 0) {
-            primaryParams.with_genres = [...genreSet].join(',');
+            primaryParams.with_genres = [...genreSet].join('|');
         }
-        
-        // The multi-level fallback search
+
         let data = await fetchData(`discover/${quizState.mediaType}`, primaryParams);
 
         if (!data || data.results.length === 0) {
@@ -210,14 +200,14 @@ async function finishQuiz() {
             delete fallbackParams['vote_average.lte'];
             data = await fetchData(`discover/${quizState.mediaType}`, fallbackParams);
         }
-        
+
         if (data && data.results.length > 0) {
             const watchlistIds = getFromStorage('watchlist').map(item => item.id);
             const watchedListIds = getFromStorage('watchedList').map(item => item.id);
             const existingIds = new Set([...watchlistIds, ...watchedListIds]);
             const filteredResults = data.results.filter(item => !existingIds.has(item.id));
             const recommendationsToShow = filteredResults.length > 0 ? filteredResults : data.results;
-            
+
             const topResults = recommendationsToShow.slice(0, 10);
             const recommendation = topResults[Math.floor(Math.random() * topResults.length)];
             quizState.onComplete(recommendation.id, quizState.mediaType);
